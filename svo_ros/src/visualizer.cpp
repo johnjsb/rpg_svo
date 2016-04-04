@@ -79,7 +79,7 @@ void Visualizer::publishMinimal(
     svo_msgs::Info msg_info;
     msg_info.header = header_msg;
     msg_info.processing_time = slam.lastProcessingTime();
-    msg_info.keyframes.resize(slam.map().keyframes_.size());
+    msg_info.keyframes.reserve(slam.map().keyframes_.size());
     for(list<FramePtr>::const_iterator it=slam.map().keyframes_.begin(); it!=slam.map().keyframes_.end(); ++it)
       msg_info.keyframes.push_back((*it)->id_);
     msg_info.stage = static_cast<int>(slam.stage());
@@ -211,9 +211,9 @@ void Visualizer::visualizeMarkers(
 
   if(pub_frames_.getNumSubscribers() > 0 || pub_points_.getNumSubscribers() > 0)
   {
-    vk::output_helper::publishHexacopterMarker(
+    vk::output_helper::publishCameraMarker(
         pub_frames_, "cam_pos", "cams", ros::Time(frame->timestamp_),
-        1, 0, 0.3, Vector3d(0.,0.,1.));
+        1, 0.3, Vector3d(0.,0.,1.));
     vk::output_helper::publishPointMarker(
         pub_points_, T_world_from_vision_*frame->pos(), "trajectory",
         ros::Time::now(), trace_id_, 0, 0.006, Vector3d(0.,0.,0.5));
